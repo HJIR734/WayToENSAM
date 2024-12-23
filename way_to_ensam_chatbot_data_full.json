@@ -1,0 +1,104 @@
+{
+    "introduction": "Bienvenue sur Way to ENSAM, votre assistant d'orientation académique pour l'ENSAM Meknès.",
+    "filières": {
+        "Génie Mécanique": {
+            "objectifs": [
+                "Acquérir des compétences en mécanique appliquée, conception et production.",
+                "Former des ingénieurs pour résoudre des problèmes complexes industriels."
+            ],
+            "modules_par_semestre": {
+                "Semestre 1": [
+                    "Mécanique des solides",
+                    "Thermodynamique",
+                    "Mathématiques appliquées"
+                ],
+                "Semestre 2": [
+                    "Mécanique des fluides",
+                    "Résistance des matériaux",
+                    "Informatique industrielle"
+                ],
+                "Semestre 3": [
+                    "Dynamique des structures",
+                    "Conception assistée par ordinateur (CAO)",
+                    "Processus de fabrication"
+                ],
+                "Semestre 4": [
+                    "Transfert thermique",
+                    "Analyse des vibrations",
+                    "Gestion de projets industriels"
+                ]
+            },
+            "débouchés": [
+                "Ingénieur en conception mécanique",
+                "Responsable de production",
+                "Consultant en ingénierie mécanique"
+            ]
+        },
+        "Génie Électrique": {
+            "objectifs": [
+                "Maîtriser les systèmes électriques et électroniques.",
+                "Préparer les étudiants à intégrer des solutions énergétiques modernes."
+            ],
+            "modules_par_semestre": {
+                "Semestre 1": [
+                    "Circuits électriques",
+                    "Introduction aux systèmes d'énergie",
+                    "Programmation Python"
+                ],
+                "Semestre 2": [
+                    "Électronique de puissance",
+                    "Théorie des champs",
+                    "Systèmes de contrôle automatique"
+                ],
+                "Semestre 3": [
+                    "Réseaux électriques",
+                    "Energies renouvelables",
+                    "Automates programmables"
+                ],
+                "Semestre 4": [
+                    "Qualité électrique",
+                    "Maintenance industrielle",
+                    "Conception des systèmes embarqués"
+                ]
+            },
+            "débouchés": [
+                "Ingénieur en énergies renouvelables",
+                "Chef de projet en électricité",
+                "Consultant en efficacité énergétique"
+            ]
+        },
+        "Génie Civil": {
+            "objectifs": [
+                "Concevoir et construire des ouvrages d’infrastructure avec respect des normes et de l’environnement.",
+                "Planifier, optimiser et gérer des projets de construction."
+            ],
+            "modules_par_semestre": {
+                "Semestre 1": [
+                    "Mécanique des sols",
+                    "Matériaux de construction",
+                    "Topographie"
+                ],
+                "Semestre 2": [
+                    "Géotechnique",
+                    "Structures en béton armé",
+                    "CAO appliquée au génie civil"
+                ],
+                "Semestre 3": [
+                    "Hydraulique urbaine",
+                    "Gestion des chantiers",
+                    "Dimensionnement des ponts"
+                ],
+                "Semestre 4": [
+                    "Pathologie des structures",
+                    "Réhabilitation des constructions",
+                    "Lean construction"
+                ]
+            },
+            "débouchés": [
+                "Ingénieur en génie civil",
+                "Chef de projet en construction",
+                "Consultant en infrastructures"
+            ]
+        }
+    }
+}
