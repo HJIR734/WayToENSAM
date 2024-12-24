@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ANGLAIS&FRANCAIS" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot d&#39;Orientation ENSAM - Langchain &amp; Ollama &mdash; WayToENSAM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=b4994969"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            WayToENSAM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Chatbot d'Orientation ENSAM - Langchain &amp; Ollama</a><ul>
+<li><a class="reference internal" href="#explication-du-code">Explication du Code</a></li>
+<li><a class="reference internal" href="#utilisation-du-projet">Utilisation du Projet</a></li>
+<li><a class="reference internal" href="#structure-des-fichiers">Structure des Fichiers</a></li>
+<li><a class="reference internal" href="#dependances">Dépendances</a></li>
+<li><a class="reference internal" href="#licence">Licence</a></li>
+<li><a class="reference internal" href="#remerciements">Remerciements</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">WayToENSAM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Chatbot d'Orientation ENSAM - Langchain &amp; Ollama</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="chatbot-d-orientation-ensam-langchain-ollama">
+<h1>Chatbot d'Orientation ENSAM - Langchain &amp; Ollama<a class="headerlink" href="#chatbot-d-orientation-ensam-langchain-ollama" title="Link to this heading"></a></h1>
+<p>Ce projet montre comment utiliser Langchain avec les modèles linguistiques d'Ollama pour créer un chatbot d'orientation académique pour l'ENSAM de Meknès. Le chatbot utilise un système de question-réponse basé sur la récupération d'information (RetrievalQA). Le code inclut des étapes pour l'extraction de texte depuis des documents PDF, le stockage de ces documents dans une base de données vectorielle, et la récupération des informations pertinentes pour répondre aux requêtes des utilisateurs.</p>
+<section id="explication-du-code">
+<h2>Explication du Code<a class="headerlink" href="#explication-du-code" title="Link to this heading"></a></h2>
+<p>Les sections suivantes détaillent le code en expliquant chaque composant, son but et son utilisation.</p>
+<p>### 1. <em>Importation des Bibliothèques</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pdfplumber</span>
+<span class="kn">from</span> <span class="nn">langchain_community.vectorstores</span> <span class="kn">import</span> <span class="n">Chroma</span>
+<span class="kn">from</span> <span class="nn">langchain_community.embeddings.ollama</span> <span class="kn">import</span> <span class="n">OllamaEmbeddings</span>
+<span class="kn">from</span> <span class="nn">langchain.text_splitter</span> <span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
+<span class="kn">from</span> <span class="nn">langchain.schema</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>os : Permet d'interagir avec le système d'exploitation.</p></li>
+<li><p>pdfplumber : Utilisé pour extraire le texte à partir de fichiers PDF.</p></li>
+<li><p>Chroma : Base de données vectorielle pour stocker et interroger les embeddings.</p></li>
+<li><p>OllamaEmbeddings : Génére des représentations vectorielles du texte.</p></li>
+<li><p>CharacterTextSplitter : Permet de découper le texte en morceaux plus petits pour le traitement.</p></li>
+<li><p>Document : Utilisé pour encapsuler le contenu des documents.</p></li>
+</ul>
+</div></blockquote>
+<p>### 2. <em>Chargement et Lecture des Documents PDF</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">read_pdf</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extraire le texte d&#39;un fichier PDF.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">pdfplumber</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdf</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">pdf</span><span class="o">.</span><span class="n">pages</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="n">page</span><span class="o">.</span><span class="n">extract_text</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">text</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>La fonction <cite>read_pdf</cite> lit un fichier PDF et extrait son texte page par page.</p></li>
+</ul>
+</div></blockquote>
+<p>### 3. <em>Chargement des Documents PDF depuis un Répertoire</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">load_documents_from_directory</span><span class="p">(</span><span class="n">directory_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Charger les documents PDF depuis un répertoire donné.&quot;&quot;&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.pdf&quot;</span><span class="p">)]</span>
+    <span class="n">documents</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="n">read_pdf</span><span class="p">(</span><span class="n">file</span><span class="p">))</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">documents</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>La fonction <cite>load_documents_from_directory</cite> charge tous les fichiers PDF d'un répertoire et extrait leur texte pour les convertir en objets <cite>Document</cite>.</p></li>
+</ul>
+</div></blockquote>
+<p>### 4. <em>Ingestion des Documents dans une Base de Données Vectorielle</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ingest_into_vector_store</span><span class="p">(</span><span class="n">combined_texts</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ingest les textes traités dans la base de données Chroma.&quot;&quot;&quot;</span>
+    <span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="o">.</span><span class="n">from_tiktoken_encoder</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">doc_splits</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">split_documents</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">combined_texts</span><span class="p">])</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">Chroma</span><span class="p">(</span><span class="n">persist_directory</span><span class="o">=</span><span class="s2">&quot;./TP_db&quot;</span><span class="p">,</span> <span class="n">embedding_function</span><span class="o">=</span><span class="n">OllamaEmbeddings</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;mxbai-embed-large:latest&quot;</span><span class="p">),</span> <span class="n">collection_name</span><span class="o">=</span><span class="s2">&quot;rag-chroma&quot;</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">add_documents</span><span class="p">(</span><span class="n">doc_splits</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">persist</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Données ingérées dans la base de données.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Cette fonction découpe les documents en morceaux plus petits et les stocke dans une base de données Chroma après les avoir transformés en vecteurs à l'aide d'OllamaEmbeddings.</p></li>
+</ul>
+</div></blockquote>
+<p>### 5. <em>Initialisation de la Base de Données Vectorielle pour la Récupération</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">initialize_vector_store</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialiser la base de données vectorielle Chroma pour la récupération.&quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">Chroma</span><span class="p">(</span><span class="n">persist_directory</span><span class="o">=</span><span class="s2">&quot;./TP_db&quot;</span><span class="p">,</span> <span class="n">embedding_function</span><span class="o">=</span><span class="n">OllamaEmbeddings</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;mxbai-embed-large:latest&quot;</span><span class="p">),</span> <span class="n">collection_name</span><span class="o">=</span><span class="s2">&quot;rag-chroma&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">db</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>La fonction <cite>initialize_vector_store</cite> initialise la base de données Chroma pour effectuer des recherches de similarité basées sur les vecteurs.</p></li>
+</ul>
+</div></blockquote>
+<p>### 6. <em>Interface Streamlit pour le Chatbot</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Chatbot d&#39;Orientation ENSAM&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Ce chatbot peut répondre aux questions sur l&#39;ENSAM de Meknès.&quot;</span><span class="p">)</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">file_uploader</span><span class="p">(</span><span class="s2">&quot;Téléchargez un fichier PDF&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pdf&quot;</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">read_pdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">question</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;Posez une question&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Poser la question&quot;</span><span class="p">):</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="n">retriever</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">question</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">question</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;Posez une question&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Poser la question&quot;</span><span class="p">):</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="n">retrieve_from_db</span><span class="p">(</span><span class="n">question</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>L'interface utilisateur est créée avec Streamlit. Elle permet aux utilisateurs de télécharger un fichier PDF et de poser des questions sur son contenu.</p></li>
+</ul>
+</div></blockquote>
+<p>### 7. <em>Récupération d'Information et Réponse à la Question</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">retrieve_from_db</span><span class="p">(</span><span class="n">question</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Récupérer la réponse à la question depuis la base de données vectorielle.&quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ChatOllama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistral&quot;</span><span class="p">)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">initialize_vector_store</span><span class="p">()</span>
+    <span class="n">retriever</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">similarity_search</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">after_rag_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Répondez à la question en vous basant uniquement sur le contexte suivant :</span>
+<span class="s2">    </span><span class="si">{context}</span>
+<span class="s2">    Question : </span><span class="si">{question}</span>
+<span class="s2">    Si aucune réponse n&#39;est possible, répondez &quot;Désolé, le contexte est insuffisant pour répondre à la question.&quot;&quot;&quot;&quot;</span>
+    <span class="n">after_rag_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_template</span><span class="p">(</span><span class="n">after_rag_template</span><span class="p">)</span>
+    <span class="n">after_rag_chain</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">RunnablePassthrough</span><span class="p">(),</span> <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="n">RunnablePassthrough</span><span class="p">()}</span>
+        <span class="o">|</span> <span class="n">after_rag_prompt</span>
+        <span class="o">|</span> <span class="n">model</span>
+        <span class="o">|</span> <span class="n">StrOutputParser</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">after_rag_chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">retriever</span><span class="p">,</span> <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="n">question</span><span class="p">})</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>La fonction <cite>retrieve_from_db</cite> interroge la base de données vectorielle et utilise le modèle Ollama pour générer une réponse à partir des données récupérées.</p></li>
+</ul>
+</div></blockquote>
+<p>### 8. <em>Réponse Dynamique Basée sur le Contexte</em> :</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">retriever</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Récupérer la réponse en fonction du document et de la question.&quot;&quot;&quot;</span>
+    <span class="n">model_local</span> <span class="o">=</span> <span class="n">ChatOllama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;mistral&quot;</span><span class="p">)</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">page_content</span><span class="o">=</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="p">]</span>
+    <span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="o">.</span><span class="n">from_tiktoken_encoder</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">doc_splits</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">vectorstore</span> <span class="o">=</span> <span class="n">Chroma</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span>
+        <span class="n">documents</span><span class="o">=</span><span class="n">doc_splits</span><span class="p">,</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="s2">&quot;rag-chroma&quot;</span><span class="p">,</span>
+        <span class="n">embedding</span><span class="o">=</span><span class="n">OllamaEmbeddings</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;mxbai-embed-large:latest&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">retriever</span> <span class="o">=</span> <span class="n">vectorstore</span><span class="o">.</span><span class="n">as_retriever</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">after_rag_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Répondez à la question en vous basant uniquement sur le contexte suivant :</span>
+<span class="s2">    </span><span class="si">{context}</span>
+<span class="s2">    Question : </span><span class="si">{question}</span>
+<span class="s2">    Si aucune réponse n&#39;est possible, répondez &quot;Désolé, le contexte est insuffisant pour répondre à la question.&quot;&quot;&quot;&quot;</span>
+    <span class="n">after_rag_prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_template</span><span class="p">(</span><span class="n">after_rag_template</span><span class="p">)</span>
+    <span class="n">after_rag_chain</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">{</span><span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">retriever</span><span class="p">,</span> <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="n">RunnablePassthrough</span><span class="p">()}</span>
+        <span class="o">|</span> <span class="n">after_rag_prompt</span>
+        <span class="o">|</span> <span class="n">model_local</span>
+        <span class="o">|</span> <span class="n">StrOutputParser</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">after_rag_chain</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">question</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>La fonction <cite>retriever</cite> gère la récupération des documents pertinents en fonction de la question et du texte donné, générant une réponse spécifique.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="utilisation-du-projet">
+<h2>Utilisation du Projet<a class="headerlink" href="#utilisation-du-projet" title="Link to this heading"></a></h2>
+<p>Pour utiliser ce projet :
+1. Remplacez le contenu du fichier PDF et la question avec vos propres documents et requêtes.
+2. Assurez-vous que le serveur Ollama fonctionne à l'adresse spécifiée dans le modèle.</p>
+</section>
+<section id="structure-des-fichiers">
+<h2>Structure des Fichiers<a class="headerlink" href="#structure-des-fichiers" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>.
+├── main.py                # Script principal contenant le code
+├── .env                   # Fichier des variables d&#39;environnement
+├── requirements.txt       # Liste des dépendances
+├── README.rst             # Documentation du projet
+├── documents/             # Dossier contenant les fichiers PDF à traiter
+</pre></div>
+</div>
+</section>
+<section id="dependances">
+<h2>Dépendances<a class="headerlink" href="#dependances" title="Link to this heading"></a></h2>
+<p>Ajoutez les dépendances suivantes dans <cite>requirements.txt</cite> :</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>langchain
+chromadb
+streamlit
+pdfplumber
+langchain-core
+python-dotenv
+</pre></div>
+</div>
+</section>
+<section id="licence">
+<h2>Licence<a class="headerlink" href="#licence" title="Link to this heading"></a></h2>
+<p>Ce projet est sous licence MIT.</p>
+</section>
+<section id="remerciements">
+<h2>Remerciements<a class="headerlink" href="#remerciements" title="Link to this heading"></a></h2>
+<p>Un grand merci aux équipes derrière Langchain, Ollama, et Streamlit pour leurs outils et APIs.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AMAL&amp;SOFIA.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

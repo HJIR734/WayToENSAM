@@ -14,9 +14,6 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import Document
 from ingest import initialize_vector_store
 
-db = initialize_vector_store()
-st.write("Vector store initialized:", db)
-
 
 # function to read the pdf file
 def read_pdf(file):
