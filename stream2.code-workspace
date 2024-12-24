@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "WayToENSAM",
+			"path": "../../../../.vscode/WayToENSAM"
+		},
+		{
+			"path": "TP_RAG-main"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "WayToENSAM"
+	}
+}
