@@ -48,13 +48,8 @@ $ ollama pull mistral
 ```bash
 $ ollama pull mxbai-embed-large
 
-
-[readthedoc website](https://waytoensam.readthedocs.io/en/latest/).
-
-
-
-
 ```
+[readthedoc website](https://waytoensam.readthedocs.io/en/latest/).
 
 
 
